@@ -8,6 +8,12 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   chatContainer: {
     width: "100%",
     marginBottom: 20,
@@ -38,20 +44,11 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     color: "blue",
   },
-  descriptionText: {
+  promptText: {
     fontSize: 16,
     color: 'black',
     marginBottom: 20,
     textAlign: 'center',
-  },  buttonContainer: {
-    marginBottom: 10,
-    width: '100%',
-  },
-  buttonText: {
-    fontSize: 18,
-    color: 'white',
-    textAlign: 'center',
-    padding: 10,
   },
   buttonContainer: {
     marginBottom: 10,
