@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#eceff1",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   chatContainer: {
     width: "100%",

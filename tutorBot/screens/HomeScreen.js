@@ -14,7 +14,7 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('AiTutor')}>
           <Text style={styles.buttonText}>AiTutor</Text>
-          <Icon name="school" size={30} color="black" style={styles.icon} />
+          <Icon name="book" size={30} color="black" style={styles.icon} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('CoCreate')}>
           <Text style={styles.buttonText}>Co-Create</Text>

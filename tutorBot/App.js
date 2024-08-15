@@ -15,13 +15,16 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerStyle: {
+          backgroundColor: '#37474f'
+        },
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
           if (route.name === 'Simulation') {
             iconName = 'flask';
           } else if (route.name === 'AiTutor') {
-            iconName = 'school';
+            iconName = 'book';
           } else if (route.name === 'CoCreate') {
             iconName = 'hammer';
           } else if (route.name === 'TeachMe') {
@@ -32,9 +35,12 @@ export default function App() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: '#FFD700',
+        tabBarInactiveTintColor: '#B0BEC5',
         tabBarShowLabel: true,
+        tabBarStyle: {
+          backgroundColor: '#546e7a',
+        },
       })}
     >
         <Tab.Screen name="Home" component={HomeScreen} />
