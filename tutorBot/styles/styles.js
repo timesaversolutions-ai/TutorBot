@@ -8,6 +8,43 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
+  promptText: {
+    fontSize: 16,
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  buttonContainer: {
+    width: '45%', // Adjusted to fit two buttons in a row with spacing
+    aspectRatio: 1, // Makes the button a square
+    backgroundColor: '#f0f0f0', // Default background color (change as needed)
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5, // Space between buttons
+    borderRadius: 10, // Optional: Rounded corners
+  },
+  buttonText: {
+    fontSize: 18,
+    color: 'black',
+    textAlign: 'center',
+    marginBottom: 10, // Space between text and the placeholder for the icon
+  },
+  iconPlaceholder: {
+    width: 40, // Placeholder width (adjust as needed)
+    height: 40, // Placeholder height (adjust as needed)
+    backgroundColor: '#ddd', // Placeholder color (can be changed)
+    borderRadius: 15, // Optional: make it a circle
+    marginTop: 5, // Space between text and icon
+  },
+  icon: {
+    marginTop: 5, // Space between text and icon
+  },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -43,16 +80,6 @@ export const styles = StyleSheet.create({
   responseText: {
     marginTop: 10,
     color: "blue",
-  },
-  promptText: {
-    fontSize: 16,
-    color: 'black',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    marginBottom: 10,
-    width: '100%',
   },
   buttonText: {
     fontSize: 18,

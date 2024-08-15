@@ -5,9 +5,10 @@ import { OpenAI } from 'openai';
 import { API_KEY } from '../config';
 import { prompts } from '../prompts';
 
+
 const openai = new OpenAI({ apiKey: API_KEY });
 
-export default function CoCreateScreen() {
+export default function TeachMeScreen() {
   const [userInput, setUserInput] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const scrollViewRef = useRef();
@@ -15,7 +16,7 @@ export default function CoCreateScreen() {
   useEffect(() => {
     // Initialize chat history with the system prompt and predefined interactions
     const initialHistory = [
-      { role: 'system', content: prompts.CoCreate.system },
+      { role: 'system', content: prompts.TeachMe.system },
       // hiding interactions until effective prompts have been tested
       // { role: 'user', content: prompts.Simulation.interactions[0].user }, // hidden
       // { role: 'assistant', content: prompts.Simulation.interactions[0].assistant }, // hidden
@@ -63,7 +64,7 @@ export default function CoCreateScreen() {
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
       >
         {/* Display the summary message directly in the UI */}
-        <Text style={styles.systemText}>{prompts.CoCreate.summary}</Text>
+        <Text style={styles.systemText}>{prompts.TeachMe.summary}</Text>
 
         {/* Display the rest of the chat history, starting after the initial prompts */}
         {chatHistory.slice(1).map(({ role, content }, index) => (
