@@ -9,8 +9,8 @@ export default function HomeScreen({ navigation }) {
       <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Simulation')}>
         <Text style={styles.buttonText}>Simulation</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Critique/Teach')}>
-        <Text style={styles.buttonText}>Critique/Teach</Text>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('AiTutor')}>
+        <Text style={styles.buttonText}>AiTutor</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('CoCreate')}>
         <Text style={styles.buttonText}>Co-Create</Text>
