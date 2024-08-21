@@ -5,7 +5,9 @@
 ### Command Prompt
 
 navigating through and creating directories (windows)
+```
 > cd <directory>
+```
 parent directory
 > cd .. 
 > dir
