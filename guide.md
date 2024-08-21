@@ -4,7 +4,11 @@
 
 ### Command Prompt
 
-navigating through and creating directories
+navigating through and creating directories (windows)
+> cd <directory>
+parent directory
+> cd .. 
+> dir
 `code`
 organizing npm
 organizing expo
