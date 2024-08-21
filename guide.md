@@ -4,6 +4,11 @@
 
 ### Command Prompt
 
+navigating through and creating directories
+`code`
+organizing npm
+organizing expo
+
 ### VSC
 
 ### Git / Github
