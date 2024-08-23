@@ -118,8 +118,8 @@ importance of version control software
 
 1. define core functioning
 2. separate into parts
-- what the user sees and interacts with - frontend
-- the software the runs the actions that make the app necessary
+- FRONTEND - what the user sees and interacts with
+- BACKEND - the software the runs the actions that make the app necessary
 
 ## My Example
 
@@ -138,6 +138,7 @@ start with the [OPEN API REFERENCE](https://platform.openai.com/docs/api-referen
 
 how to get a API Key  
 >Create an OpenAI account
+>![API Key Tab](API_KEY.png)
 
 how to secure API key in the code
 

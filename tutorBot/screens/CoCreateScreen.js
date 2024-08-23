@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, ScrollView, Button, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { styles } from '../styles/styles';
 import { OpenAI } from 'openai';
-import { API_KEY } from '../config';
 import { prompts } from '../prompts';
+import { OPENAI_API_KEY } from '@env';
 
-const openai = new OpenAI({ apiKey: API_KEY });
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 export default function CoCreateScreen() {
   const [userInput, setUserInput] = useState('');
