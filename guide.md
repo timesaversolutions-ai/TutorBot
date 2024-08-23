@@ -45,7 +45,7 @@ npm install [package]
 ```
 
 #### Expo dev
-as always, start with the [docs](https://docs.expo.dev/)  
+start with the [expo docs](https://docs.expo.dev/)  
 
 in order to view your expo app, you must install Expo Go on the App Store or similar 
 
@@ -120,3 +120,82 @@ importance of version control software
 2. separate into parts
 - what the user sees and interacts with - frontend
 - the software the runs the actions that make the app necessary
+
+## My Example
+
+### Initial Project Idea
+
+based on a research paper: Instructors as Innovators: A future-focused approach to new AI learning opportunities, with prompts
+
+>this paper argued that generative AI could be used to create and enhance personalized learning experiences for students. the authors also generously provided prompts and blueprints to recreate AI supported exercises to enhance learning  
+>Realizing a completed and generalized app version of these concepts could provide a lot of value to students and instructors, i decided to take this on as a project
+
+### Breaking down project into parts
+
+#### How to access OpenAI's API in Javascript
+
+start with the [OPEN API REFERENCE](https://platform.openai.com/docs/api-reference/)  
+
+how to get a API Key  
+>Create an OpenAI account
+
+how to secure API key in the code
+
+create a .env file in your project. name a variable for your API key and use the key as the value
+```
+OPENAI_API_KEY=YOUR_API_KEY
+```
+
+And Implement the code like this:
+```
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
+```
+I NEED TO ADJUST CODE SO IT ACTUALLY USES THIS METHOD
+
+for most cases, 'gpt-4o-mini' or 'gpt-3.5-turbo' will make the best balance of cost and performance
+
+#### Testing Basic Requests
+
+The main api endpoint I need for this project is chat completions.  
+
+The best way to understand more about how it works is by running the example code: 
+
+```
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
+async function main() {
+  const completion = await openai.chat.completions.create({
+    messages: [{ role: "system", content: "You are a helpful assistant." }],
+    model: "gpt-4o",
+  });
+
+  console.log(completion.choices[0]);
+}
+
+main();
+```
+
+The main parts seem to be
+>import openai's package  
+>set a const for a each request
+>
+
+#### Running basic idea in command prompt
+
+#### How to Retain Conversation History
+
+#### how to build mobile app interface
+
+#### how to preset the AI for specific types of tasks
+
+#### how to implement backend services as intended
+
+#### how to improve user interface
+
+#### elevating software to production level (and what that means)
+
+#### all preparations needed to host app on app store
