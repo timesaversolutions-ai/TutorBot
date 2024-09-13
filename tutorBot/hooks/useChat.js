@@ -2,17 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
 
-export const useChat = (initialPrompt) => {
+export const useChat = (initialPrompt, initialHistory = []) => {
+  const [chatHistory, setChatHistory] = useState([...initialHistory, { role: 'system', content: initialPrompt }]);
   const [userInput, setUserInput] = useState('');
-  const [chatHistory, setChatHistory] = useState([]);
   const scrollViewRef = useRef();
-
-  useEffect(() => {
-    const initialHistory = [
-      { role: 'system', content: initialPrompt },
-    ];
-    setChatHistory(initialHistory);
-  }, [initialPrompt]);
 
   const handleSend = async () => {
     try {
@@ -43,6 +36,7 @@ export const useChat = (initialPrompt) => {
     userInput,
     setUserInput,
     chatHistory,
+    setChatHistory,
     handleSend,
     scrollViewRef,
   };
