@@ -1,8 +1,9 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView, Button, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { styles } from '../styles/styles';
 import { prompts } from '../prompts';
 import { useChat } from '../hooks/useChat';
+import { useConversation } from '../hooks/useConversation';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
   <Text style={role === 'user' ? styles.userText : role === 'assistant' ? styles.botText : styles.systemText}>
@@ -10,8 +11,21 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
   </Text>
 ));
 
-const SimulationScreen = React.memo(() => {
-  const { userInput, setUserInput, chatHistory, handleSend, scrollViewRef } = useChat(prompts.Simulation.system);
+const SimulationScreen = React.memo(({ route, navigation }) => {
+  const { userId, userEmail, conversationId } = route.params;
+  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef } = useChat(prompts.Simulation.system, { userId, userEmail });
+  const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
+  const [currentConversationId, setCurrentConversationId] = useState(conversationId);
+
+  useEffect(() => {
+    if (conversationId) {
+      loadConversation(conversationId).then(loadedHistory => {
+        if (loadedHistory) {
+          setChatHistory(loadedHistory);
+        }
+      });
+    }
+  }, [conversationId, loadConversation, setChatHistory]);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (
@@ -19,13 +33,20 @@ const SimulationScreen = React.memo(() => {
     ))
   ), [chatHistory]);
 
-  const handleUserInput = useCallback((text) => {
-    setUserInput(text);
-  }, [setUserInput]);
+  const handleSendPress = useCallback(async () => {
+    await handleSend();
+    if (currentConversationId) {
+      await updateConversationHistory(currentConversationId, chatHistory);
+    } else {
+      const { id } = await saveConversation(userId, chatHistory);
+      setCurrentConversationId(id);
+    }
+  }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory]);
 
-  const handleSendPress = useCallback(() => {
-    handleSend();
-  }, [handleSend]);
+  const handleNewConversation = useCallback(() => {
+    setChatHistory([{ role: 'system', content: prompts.Simulation.system }]);
+    setCurrentConversationId(null);
+  }, [setChatHistory]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -48,7 +69,11 @@ const SimulationScreen = React.memo(() => {
           onChangeText={setUserInput}
           placeholder="Type your message"
         />
-        <Button title="Send" onPress={handleSendPress} />
+        <View style={styles.buttonContainer}>
+          <Button title="Send" onPress={handleSendPress} />
+          <Button title="New Conversation" onPress={handleNewConversation} />
+          <Button title="View Conversations" onPress={() => navigation.navigate('ConversationList', { userId })} />
+        </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );

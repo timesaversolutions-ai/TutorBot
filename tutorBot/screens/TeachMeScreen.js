@@ -10,8 +10,9 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
   </Text>
 ));
 
-const TeachMeScreen = React.memo(() => {
-  const { userInput, setUserInput, chatHistory, handleSend, scrollViewRef } = useChat(prompts.TeachMe.system);
+const TeachMeScreen = React.memo(({ route }) => {
+  const { user } = route.params;
+  const { userInput, setUserInput, chatHistory, handleSend, scrollViewRef } = useChat(prompts.TeachMe.system, user);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (

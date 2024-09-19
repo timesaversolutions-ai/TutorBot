@@ -56,12 +56,14 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    height: 40,
-    borderColor: "gray",
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
     borderWidth: 1,
-    width: "100%",
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    borderColor: 'gray',
+    margin: 5,
+    width: '100%', // This makes the input full width of its container
   },
   userText: {
     alignSelf: "flex-end",
@@ -86,5 +88,53 @@ export const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     padding: 10,
+  },
+  loginInput: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+    margin: 5,
+  },
+  buttonOutlineText: {
+    color: '#0782F9',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  buttonOutline: {
+    marginTop: 5,
+    backgroundColor: '#dedede',
+    borderRadius: 40,
+  },
+  button: {
+    width: '100%', // Make buttons full width
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 5, // Add vertical spacing between buttons
+  },
+  loginButtonContainer: {
+    width: '100%', // Ensure the button container is full width
+    marginTop: 10, // Add some space above the buttons
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  signOutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FF6347', // Tomato color, you can change this
+    padding: 10,
+    borderRadius: 5,
+  },
+  signOutText: {
+    color: '#fff',
+    marginLeft: 10,
+    fontSize: 16,
   },
 });

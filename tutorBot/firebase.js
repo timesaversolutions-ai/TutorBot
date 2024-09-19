@@ -1,6 +1,6 @@
 import { firebase_apiKey, firebase_authDomain, firebase_projectId, firebase_storageBucket, firebase_messagingSenderId, firebase_appId } from '@env';
 import { initializeAuth, getReactNativePersistence, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -25,7 +25,7 @@ if (getApps().length === 0) {
 
 // Initialize Firebase Authentication and Firestore
 const auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+    persistence: getReactNativePersistence(AsyncStorage)
 });
 
 // Initialize Firebase Storage

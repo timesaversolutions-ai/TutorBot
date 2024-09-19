@@ -10,8 +10,9 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
   </Text>
 ));
 
-const CoCreateScreen = React.memo(() => {
-  const { userInput, setUserInput, chatHistory, handleSend, scrollViewRef } = useChat(prompts.CoCreate.system);
+const CoCreateScreen = React.memo(({ route }) => {
+  const { user } = route.params;
+  const { userInput, setUserInput, chatHistory, handleSend, scrollViewRef } = useChat(prompts.CoCreate.system, user);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (

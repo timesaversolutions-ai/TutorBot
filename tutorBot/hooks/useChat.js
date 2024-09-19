@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
 
-export const useChat = (initialPrompt, initialHistory = []) => {
+export const useChat = (initialPrompt, user, initialHistory = []) => {
   const [chatHistory, setChatHistory] = useState([...initialHistory, { role: 'system', content: initialPrompt }]);
   const [userInput, setUserInput] = useState('');
   const scrollViewRef = useRef();
