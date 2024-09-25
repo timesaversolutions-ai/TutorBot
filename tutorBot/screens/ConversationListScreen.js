@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { styles } from '../styles/styles';
 import { useConversation } from '../hooks/useConversation';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const ConversationListScreen = ({ route, navigation }) => {
   const { userId } = route.params;
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { getUserConversations } = useConversation();
+  const { getUserConversations, removeConversation } = useConversation(); // Add removeConversation
 
   useEffect(() => {
     const loadConversations = async () => {
@@ -16,7 +17,6 @@ const ConversationListScreen = ({ route, navigation }) => {
         setLoading(true);
         console.log('Loading conversations for user:', userId);
         const userConversations = await getUserConversations(userId);
-        console.log('Loaded conversations:', userConversations);
         setConversations(userConversations);
       } catch (err) {
         console.error('Error loading conversations:', err);
@@ -28,13 +28,42 @@ const ConversationListScreen = ({ route, navigation }) => {
     loadConversations();
   }, [userId, getUserConversations]);
 
+  const handleRemoveConversation = async (conversationId) => {
+    Alert.alert(
+      "Delete Conversation",
+      "Are you sure you want to delete this conversation?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete", 
+          onPress: async () => {
+            const success = await removeConversation(conversationId);
+            if (success) {
+              setConversations(conversations.filter(conv => conv.id !== conversationId));
+            } else {
+              Alert.alert("Error", "Failed to delete conversation");
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.conversationItem}
-      onPress={() => navigation.navigate('Simulation', { userId, conversationId: item.id })}
-    >
-      <Text>{new Date(item.timestamp?.toDate()).toLocaleString()}</Text>
-    </TouchableOpacity>
+    <View style={styles.conversationItemContainer}>
+      <TouchableOpacity
+        style={styles.conversationItem}
+        onPress={() => navigation.navigate('Simulation', { userId, conversationId: item.id })}
+      >
+      </TouchableOpacity>
+      <Text>{new Date(item.timestamp?.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</Text>
+      <TouchableOpacity
+        onPress={() => handleRemoveConversation(item.id)}
+        style={styles.removeIcon}
+      >
+        <Icon name="trash-outline" size={24} color="red" />
+      </TouchableOpacity>
+    </View>
   );
 
   if (loading) {

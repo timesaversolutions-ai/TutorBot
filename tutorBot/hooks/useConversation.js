@@ -47,7 +47,6 @@ export const useConversation = () => {
       querySnapshot.forEach((doc) => {
         conversations.push({ id: doc.id, ...doc.data() });
       });
-      console.log('Fetched conversations:', conversations);
       return conversations;
     } catch (error) {
       console.error('Error fetching user conversations:', error);

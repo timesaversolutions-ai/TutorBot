@@ -16,6 +16,7 @@ export const useChat = (initialPrompt, user, initialHistory = []) => {
         model: 'gpt-4o-mini',
         messages,
         max_tokens: 150,
+        temperature: .25,
       }, {
         headers: {
           'Authorization': `Bearer ${OPENAI_API_KEY}`,

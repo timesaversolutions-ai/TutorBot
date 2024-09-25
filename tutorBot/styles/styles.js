@@ -137,4 +137,17 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
+  conversationItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: 10,
+  },
+  conversationItem: {
+    flex: 1,
+    padding: 10,
+  },
+  removeIcon: {
+    padding: 5,
+  },
 });
