@@ -144,7 +144,7 @@ export const styles = StyleSheet.create({
     paddingRight: 10,
   },
   conversationItem: {
-    flex: 1,
+    // flex: 1,
     padding: 10,
   },
   removeIcon: {

@@ -55,6 +55,7 @@ const ConversationListScreen = ({ route, navigation }) => {
         style={styles.conversationItem}
         onPress={() => navigation.navigate('Simulation', { userId, conversationId: item.id })}
       >
+        <Text style={{color: 'blue'}}>Load Conversation</Text>
       </TouchableOpacity>
       <Text>{new Date(item.timestamp?.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</Text>
       <TouchableOpacity
