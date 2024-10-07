@@ -4,6 +4,7 @@ import { styles } from '../styles/styles';
 import { prompts } from '../prompts';
 import { useChat } from '../hooks/useChat';
 import { useConversation } from '../hooks/useConversation';
+import { setupEmbeddingSystem, retrieveRelevantSections } from '../utils/embeddingService';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
   <Text style={role === 'user' ? styles.userText : role === 'assistant' ? styles.botText : styles.systemText}>
@@ -16,6 +17,7 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
   const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(prompts.AiTutor.system, { userId, userEmail });
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
+  const [embeddedSections, setEmbeddedSections] = useState(null);
 
   useEffect(() => {
     if (conversationId) {
@@ -29,9 +31,19 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
 
   useEffect(() => {
     if (usageData) {
-      console.log('Latest usage data:', usageData);
+      console.log('Latest usage data:', JSON.stringify(usageData, null, 2));
     }
   }, [usageData]);
+
+  useEffect(() => {
+    console.log('Setting up embedding system...');
+    setupEmbeddingSystem().then(result => {
+      console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
+      setEmbeddedSections(result);
+    }).catch(error => {
+      console.error('Error setting up embedding system:', error);
+    });
+  }, []);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (
@@ -40,14 +52,29 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
   ), [chatHistory]);
 
   const handleSendPress = useCallback(async () => {
-    await handleSend();
+    console.log('User Input:', userInput); // Log user input
+
+    if (embeddedSections) {
+      console.log('Embedded sections available. Retrieving relevant sections...');
+      const relevantSections = await retrieveRelevantSections(userInput, embeddedSections);
+      console.log('Relevant Sections:', relevantSections.map(section => section.text)); // Log relevant sections
+
+      const contextualPrompt = relevantSections.map(section => section.text).join('\n\n');
+      console.log('Contextual Prompt:', contextualPrompt); // Log contextual prompt
+      
+      await handleSend(contextualPrompt);
+    } else {
+      console.log('No embedded sections available. Sending without context.');
+      await handleSend();
+    }
+
     if (currentConversationId) {
       await updateConversationHistory(currentConversationId, chatHistory);
     } else {
-      const { id } = await saveConversation(userId, chatHistory, 'AiTutor'); // Add screen name
+      const { id } = await saveConversation(userId, chatHistory, 'AiTutor');
       setCurrentConversationId(id);
     }
-  }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory]);
+  }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput]);
 
   const handleNewConversation = useCallback(() => {
     setChatHistory([{ role: 'system', content: prompts.AiTutor.system }]);
