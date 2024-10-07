@@ -38,7 +38,7 @@ const SimulationScreen = React.memo(({ route, navigation }) => {
     if (currentConversationId) {
       await updateConversationHistory(currentConversationId, chatHistory);
     } else {
-      const { id } = await saveConversation(userId, chatHistory);
+      const { id } = await saveConversation(userId, chatHistory, 'Simulation');
       setCurrentConversationId(id);
     }
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory]);

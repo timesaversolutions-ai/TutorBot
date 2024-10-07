@@ -53,11 +53,15 @@ const ConversationListScreen = ({ route, navigation }) => {
     <View style={styles.conversationItemContainer}>
       <TouchableOpacity
         style={styles.conversationItem}
-        onPress={() => navigation.navigate('Simulation', { userId, conversationId: item.id })}
+        onPress={() => {
+          const screen = item.screen || 'Simulation'; // Default to Simulation if not specified
+          navigation.navigate(screen, { userId, conversationId: item.id });
+        }}
       >
         <Text style={{color: 'blue'}}>Load Conversation</Text>
       </TouchableOpacity>
       <Text>{new Date(item.timestamp?.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</Text>
+      <Text>{item.screen || 'Simulation'}</Text>
       <TouchableOpacity
         onPress={() => handleRemoveConversation(item.id)}
         style={styles.removeIcon}

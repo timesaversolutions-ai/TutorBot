@@ -13,9 +13,25 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
 
 const AiTutorScreen = React.memo(({ route, navigation }) => {
   const { userId, userEmail, conversationId } = route.params;
-  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef } = useChat(prompts.AiTutor.system, { userId, userEmail });
+  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(prompts.AiTutor.system, { userId, userEmail });
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
+
+  useEffect(() => {
+    if (conversationId) {
+      loadConversation(conversationId).then(loadedHistory => {
+        if (loadedHistory) {
+          setChatHistory(loadedHistory);
+        }
+      });
+    }
+  }, [conversationId, loadConversation, setChatHistory]);
+
+  useEffect(() => {
+    if (usageData) {
+      console.log('Latest usage data:', usageData);
+    }
+  }, [usageData]);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (
@@ -23,16 +39,12 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
     ))
   ), [chatHistory]);
 
-  const handleUserInput = useCallback((text) => {
-    setUserInput(text);
-  }, [setUserInput]);
-
   const handleSendPress = useCallback(async () => {
     await handleSend();
     if (currentConversationId) {
       await updateConversationHistory(currentConversationId, chatHistory);
     } else {
-      const { id } = await saveConversation(userId, chatHistory);
+      const { id } = await saveConversation(userId, chatHistory, 'AiTutor'); // Add screen name
       setCurrentConversationId(id);
     }
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory]);

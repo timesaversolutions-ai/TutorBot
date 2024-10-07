@@ -32,7 +32,7 @@ const TeachMeScreen = React.memo(({ route, navigation }) => {
     if (currentConversationId) {
       await updateConversationHistory(currentConversationId, chatHistory);
     } else {
-      const { id } = await saveConversation(userId, chatHistory);
+      const { id } = await saveConversation(userId, chatHistory, 'TeachMe');
       setCurrentConversationId(id);
     }
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory]);

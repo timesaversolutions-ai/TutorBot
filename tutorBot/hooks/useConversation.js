@@ -1,17 +1,17 @@
 import { useCallback } from 'react';
-import { collection, addDoc, getDoc, getDocs, query, where, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDoc, getDocs, doc, deleteDoc, updateDoc, query, where, orderBy, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export const useConversation = () => {
-  const saveConversation = useCallback(async (userId, chatHistory) => {
+  const saveConversation = useCallback(async (userId, chatHistory, screen) => {
     try {
-      const docRef = await addDoc(collection(db, 'conversations'), {
+      const conversationRef = await addDoc(collection(db, 'conversations'), {
         userId,
-        chatHistory: JSON.stringify(chatHistory),
-        timestamp: new Date(),
+        chatHistory,
+        timestamp: serverTimestamp(),
+        screen, // Add this line to save the screen name
       });
-      console.log('Conversation saved with ID:', docRef.id);
-      return { id: docRef.id };
+      return { id: conversationRef.id };
     } catch (error) {
       console.error('Error saving conversation:', error);
       return null;

@@ -32,7 +32,7 @@ const CoCreateScreen = React.memo(({ route, navigation }) => {
     if (currentConversationId) {
       await updateConversationHistory(currentConversationId, chatHistory);
     } else {
-      const { id } = await saveConversation(userId, chatHistory);
+      const { id } = await saveConversation(userId, chatHistory, 'CoCreate');
       setCurrentConversationId(id);
     }
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory]);
