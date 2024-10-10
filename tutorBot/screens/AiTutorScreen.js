@@ -14,12 +14,19 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
 
 const AiTutorScreen = React.memo(({ route, navigation }) => {
   const { userId, userEmail, conversationId } = route.params;
-  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(prompts.AiTutor.system, { userId, userEmail });
+  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(
+    prompts.AiTutor.system, // TODO: decrease the size of the initial prompt and rely on RAG; ask all info gathering questions first, then proceed to learning
+    { userId, userEmail },
+    'AiTutor',
+    []
+  );
+
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
   const [embeddedSections, setEmbeddedSections] = useState(null);
 
   useEffect(() => {
+    // Load conversation if conversationId is provided
     if (conversationId) {
       loadConversation(conversationId).then(loadedHistory => {
         if (loadedHistory) {
@@ -27,6 +34,15 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
         }
       });
     }
+
+    // Set up embedding system
+    console.log('Setting up embedding system...');
+    setupEmbeddingSystem().then(result => {
+      console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
+      setEmbeddedSections(result);
+    }).catch(error => {
+      console.error('Error setting up embedding system:', error);
+    });
   }, [conversationId, loadConversation, setChatHistory]);
 
   useEffect(() => {
@@ -35,15 +51,6 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
     }
   }, [usageData]);
 
-  useEffect(() => {
-    console.log('Setting up embedding system...');
-    setupEmbeddingSystem().then(result => {
-      console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
-      setEmbeddedSections(result);
-    }).catch(error => {
-      console.error('Error setting up embedding system:', error);
-    });
-  }, []);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (

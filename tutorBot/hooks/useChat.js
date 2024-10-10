@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
 
-export const useChat = (initialPrompt, user, initialHistory = []) => {
-  const [chatHistory, setChatHistory] = useState([...initialHistory, { role: 'system', content: initialPrompt }]);
+export const useChat = (initialPrompt, user, selectedScreen, initialHistory = []) => {
+  const [chatHistory, setChatHistory] = useState([
+    ...initialHistory, 
+    { role: 'system', content: `${initialPrompt}\n\nSelected screen: ${selectedScreen}` }
+  ]);
   const [userInput, setUserInput] = useState('');
   const [usageData, setUsageData] = useState(null);
   const scrollViewRef = useRef();
