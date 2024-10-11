@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
 
-export const useChat = (initialPrompt, user, selectedScreen, initialHistory = []) => {
+export const useChat = (initialPrompt, fullSystemPrompt, user, selectedScreen, initialHistory = []) => {
   const [chatHistory, setChatHistory] = useState([
     ...initialHistory, 
     { role: 'system', content: `${initialPrompt}\n\nSelected screen: ${selectedScreen}` }
@@ -13,7 +13,10 @@ export const useChat = (initialPrompt, user, selectedScreen, initialHistory = []
 
   const handleSend = async (contextualPrompt = '') => {
     try {
-      const messages = chatHistory.map(({ role, content }) => ({ role, content }));
+      const messages = [
+        { role: 'system', content: `${fullSystemPrompt}\n\nSelected screen: ${selectedScreen}` },
+        ...chatHistory.slice(1),  // Exclude the first system message from chatHistory
+      ];
       if (contextualPrompt) {
         messages.push({ role: 'system', content: `Consider this context: ${contextualPrompt}` });
       }

@@ -15,7 +15,8 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
 const AiTutorScreen = React.memo(({ route, navigation }) => {
   const { userId, userEmail, conversationId } = route.params;
   const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(
-    prompts.AiTutor.system, // TODO: decrease the size of the initial prompt and rely on RAG; ask all info gathering questions first, then proceed to learning
+    prompts.AiTutor.summary,  // Summary for display
+    prompts.AiTutor.system,   // Full system prompt for API
     { userId, userEmail },
     'AiTutor',
     []
@@ -26,7 +27,6 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
   const [embeddedSections, setEmbeddedSections] = useState(null);
 
   useEffect(() => {
-    // Load conversation if conversationId is provided
     if (conversationId) {
       loadConversation(conversationId).then(loadedHistory => {
         if (loadedHistory) {
@@ -35,7 +35,6 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
       });
     }
 
-    // Set up embedding system
     console.log('Setting up embedding system...');
     setupEmbeddingSystem().then(result => {
       console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
@@ -51,7 +50,6 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
     }
   }, [usageData]);
 
-
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (
       <MemoizedChatMessage key={index} role={role} content={content} />
@@ -59,16 +57,12 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
   ), [chatHistory]);
 
   const handleSendPress = useCallback(async () => {
-    console.log('User Input:', userInput); // Log user input
+    console.log('User Input:', userInput);
 
     if (embeddedSections) {
       console.log('Embedded sections available. Retrieving relevant sections...');
       const relevantSections = await retrieveRelevantSections(userInput, embeddedSections);
-      console.log('Relevant Sections:', relevantSections.map(section => section.text)); // Log relevant sections
-
       const contextualPrompt = relevantSections.map(section => section.text).join('\n\n');
-      console.log('Contextual Prompt:', contextualPrompt); // Log contextual prompt
-      
       await handleSend(contextualPrompt);
     } else {
       console.log('No embedded sections available. Sending without context.');
@@ -84,7 +78,7 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput]);
 
   const handleNewConversation = useCallback(() => {
-    setChatHistory([{ role: 'system', content: prompts.AiTutor.system }]);
+    setChatHistory([{ role: 'system', content: prompts.AiTutor.summary }]);
     setCurrentConversationId(null);
   }, [setChatHistory]);
 

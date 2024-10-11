@@ -72,7 +72,7 @@ async function setupEmbeddingSystem() {
 }
 
 // Split text into smaller chunks
-function splitTextIntoChunks(text, maxTokens = 7000) {
+function splitTextIntoChunks(text, maxTokens = 5000) {
   const words = text.split(' ');
   const chunks = [];
   let currentChunk = [];

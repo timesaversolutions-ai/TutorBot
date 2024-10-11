@@ -4,7 +4,6 @@ import { styles } from '../styles/styles';
 import { prompts } from '../prompts';
 import { useChat } from '../hooks/useChat';
 import { useConversation } from '../hooks/useConversation';
-// Add this import
 import { setupEmbeddingSystem, retrieveRelevantSections } from '../utils/embeddingService';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
@@ -15,21 +14,26 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
 
 const TeachMeScreen = React.memo(({ route, navigation }) => {
   const { userId, userEmail, conversationId } = route.params;
-  // Add usageData to the destructured values from useChat
-  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(prompts.TeachMe.system, { userId, userEmail });
+  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(
+    prompts.TeachMe.summary,  // Summary for display
+    prompts.TeachMe.system,   // Full system prompt for API
+    { userId, userEmail },
+    'TeachMe',
+    []
+  );
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
-  // Add this state
   const [embeddedSections, setEmbeddedSections] = useState(null);
 
-  // Add these useEffects
   useEffect(() => {
-    if (usageData) {
-      console.log('Latest usage data:', usageData);
+    if (conversationId) {
+      loadConversation(conversationId).then(loadedHistory => {
+        if (loadedHistory) {
+          setChatHistory(loadedHistory);
+        }
+      });
     }
-  }, [usageData]);
 
-  useEffect(() => {
     console.log('Setting up embedding system...');
     setupEmbeddingSystem().then(result => {
       console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
@@ -37,7 +41,13 @@ const TeachMeScreen = React.memo(({ route, navigation }) => {
     }).catch(error => {
       console.error('Error setting up embedding system:', error);
     });
-  }, []);
+  }, [conversationId, loadConversation, setChatHistory]);
+
+  useEffect(() => {
+    if (usageData) {
+      console.log('Latest usage data:', JSON.stringify(usageData, null, 2));
+    }
+  }, [usageData]);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (
@@ -45,21 +55,13 @@ const TeachMeScreen = React.memo(({ route, navigation }) => {
     ))
   ), [chatHistory]);
 
-  const handleUserInput = useCallback((text) => {
-    setUserInput(text);
-  }, [setUserInput]);
-
   const handleSendPress = useCallback(async () => {
     console.log('User Input:', userInput);
 
     if (embeddedSections) {
       console.log('Embedded sections available. Retrieving relevant sections...');
       const relevantSections = await retrieveRelevantSections(userInput, embeddedSections);
-      // console.log('Relevant Sections:', relevantSections.map(section => section.text));
-
       const contextualPrompt = relevantSections.map(section => section.text).join('\n\n');
-      // console.log('Contextual Prompt:', contextualPrompt);
-      
       await handleSend(contextualPrompt);
     } else {
       console.log('No embedded sections available. Sending without context.');
@@ -75,7 +77,7 @@ const TeachMeScreen = React.memo(({ route, navigation }) => {
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput]);
 
   const handleNewConversation = useCallback(() => {
-    setChatHistory([{ role: 'system', content: prompts.TeachMe.system }]);
+    setChatHistory([{ role: 'system', content: prompts.TeachMe.summary }]);
     setCurrentConversationId(null);
   }, [setChatHistory]);
 

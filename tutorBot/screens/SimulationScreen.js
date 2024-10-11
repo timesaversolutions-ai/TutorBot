@@ -16,7 +16,13 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
 const SimulationScreen = React.memo(({ route, navigation }) => {
   const { userId, userEmail, conversationId } = route.params;
   // Add usageData to the destructured values from useChat
-  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(prompts.Simulation.system, { userId, userEmail });
+  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(
+    prompts.Simulation.summary,  // Summary for display
+    prompts.Simulation.system,   // Full system prompt for API
+    { userId, userEmail },
+    'Simulation',
+    []
+  );
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
   // Add this state
@@ -82,7 +88,7 @@ const SimulationScreen = React.memo(({ route, navigation }) => {
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput]);
 
   const handleNewConversation = useCallback(() => {
-    setChatHistory([{ role: 'system', content: prompts.Simulation.system }]);
+    setChatHistory([{ role: 'system', content: prompts.Simulation.summary }]);
     setCurrentConversationId(null);
   }, [setChatHistory]);
 

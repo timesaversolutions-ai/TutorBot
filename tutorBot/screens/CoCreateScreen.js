@@ -4,7 +4,6 @@ import { styles } from '../styles/styles';
 import { prompts } from '../prompts';
 import { useChat } from '../hooks/useChat';
 import { useConversation } from '../hooks/useConversation';
-// Add this import
 import { setupEmbeddingSystem, retrieveRelevantSections } from '../utils/embeddingService';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
@@ -15,12 +14,40 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
 
 const CoCreateScreen = React.memo(({ route, navigation }) => {
   const { userId, userEmail, conversationId } = route.params;
-  // Add usageData to the destructured values from useChat
-  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(prompts.CoCreate.system, { userId, userEmail });
+  const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(
+    prompts.CoCreate.summary,  // Summary for display
+    prompts.CoCreate.system,   // Full system prompt for API
+    { userId, userEmail },
+    'CoCreate',
+    []
+  );
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
-  // Add this state
   const [embeddedSections, setEmbeddedSections] = useState(null);
+
+  useEffect(() => {
+    if (conversationId) {
+      loadConversation(conversationId).then(loadedHistory => {
+        if (loadedHistory) {
+          setChatHistory(loadedHistory);
+        }
+      });
+    }
+
+    console.log('Setting up embedding system...');
+    setupEmbeddingSystem().then(result => {
+      console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
+      setEmbeddedSections(result);
+    }).catch(error => {
+      console.error('Error setting up embedding system:', error);
+    });
+  }, [conversationId, loadConversation, setChatHistory]);
+
+  useEffect(() => {
+    if (usageData) {
+      console.log('Latest usage data:', JSON.stringify(usageData, null, 2));
+    }
+  }, [usageData]);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (
@@ -28,21 +55,13 @@ const CoCreateScreen = React.memo(({ route, navigation }) => {
     ))
   ), [chatHistory]);
 
-  const handleUserInput = useCallback((text) => {
-    setUserInput(text);
-  }, [setUserInput]);
-
   const handleSendPress = useCallback(async () => {
     console.log('User Input:', userInput);
 
     if (embeddedSections) {
       console.log('Embedded sections available. Retrieving relevant sections...');
       const relevantSections = await retrieveRelevantSections(userInput, embeddedSections);
-      console.log('Relevant Sections:', relevantSections.map(section => section.text));
-
       const contextualPrompt = relevantSections.map(section => section.text).join('\n\n');
-      console.log('Contextual Prompt:', contextualPrompt);
-      
       await handleSend(contextualPrompt);
     } else {
       console.log('No embedded sections available. Sending without context.');
@@ -58,31 +77,9 @@ const CoCreateScreen = React.memo(({ route, navigation }) => {
   }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput]);
 
   const handleNewConversation = useCallback(() => {
-    setChatHistory([{ role: 'system', content: prompts.CoCreate.system }]);
+    setChatHistory([{ role: 'system', content: prompts.CoCreate.summary }]);
     setCurrentConversationId(null);
   }, [setChatHistory]);
-
-  useEffect(() => {
-    if (usageData) {
-      console.log('Latest usage data:', usageData);
-    }
-  }, [usageData]);
-
-  useEffect(() => {
-    console.log('Setting up embedding system...');
-    setupEmbeddingSystem().then(result => {
-      console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
-      setEmbeddedSections(result);
-    }).catch(error => {
-      console.error('Error setting up embedding system:', error);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (usageData) {
-      console.log('Latest usage data:', JSON.stringify(usageData, null, 2));
-    }
-  }, [usageData]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -105,8 +102,8 @@ const CoCreateScreen = React.memo(({ route, navigation }) => {
           onChangeText={setUserInput}
           placeholder="Type your message"
         />
-        <Button title="Send" onPress={handleSendPress} />
         <View style={styles.buttonContainer}>
+          <Button title="Send" onPress={handleSendPress} />
           <Button title="New Conversation" onPress={handleNewConversation} />
           <Button title="View Conversations" onPress={() => navigation.navigate('ConversationList', { userId })} />
         </View>
