@@ -39,7 +39,7 @@ This implementation will use the [embeddings](https://platform.openai.com/docs/a
 
 ### Document for retrieval
 
-The paper is free to view [here](https://ssrn.com/abstract=4802463).
+The paper is free to view [here](https://ssrn.com/abstract=4802463). Citation below.
 
 ### Simple User Interface and Prompting
 
@@ -62,7 +62,7 @@ const response = await openai.embeddings.create({
 
 ### Step 2: Create a retrieval function
 
-This function operates in three steps: first, it sends the user input to the OpenAI embeddings endpoint to generate a numerical representation of the text; next, it compares that embedding with pre-embedded sections to identify the most relevant ones; finally, it sends both the most relevant sections and the user input to the LLM for processing.
+This function operates in three steps: first, it sends the user input to the OpenAI embeddings endpoint to generate a numerical representation of the text; next, it compares that embedding with the pre-embedded sections of the source document to identify the most relevant ones; finally, it sends both the most relevant sections and the user input to the LLM for processing.
 
 ```javascript
 async function retrieveRelevantSections(query, embeddedSections, topK = 3) {
@@ -78,7 +78,75 @@ async function retrieveRelevantSections(query, embeddedSections, topK = 3) {
 
 Cosine Similarity identifies the most relevant sections by calculating the numerical similarity between the user input and the embedded sections.
 
-### Step 3: Integrate the retrieval function into the chatbot
+### Step 3: Use a chatbot interface to do the service
+
+The Chat interface starts by showing the user a summary of the learning approach they selected, and asking them to input a topic of their choice. Each time the user sends a message, their input and the embedded paper are sent to the LLM. This functionality allows the chat interface to closely follow the guidance from the paper, while also utilizing its base conversational abilities to interact with the user. While this does increase the token count slightly, it enables more accurate and contextual responses.
+
+Include Screens showing step by step front end process
+
+This useChat hook manages the state and logic for a chat interface. It initializes the chat history, handles user input, and provides a handleSend function that sends messages to an AI model via API, incorporating both system prompts and relevant information from the paper found using the retrieval function. The hook returns various state variables and functions, allowing components to easily integrate chat functionality.
+
+```javascript
+export const useChat = (initialPrompt, fullSystemPrompt, user, selectedScreen, initialHistory = []) => {
+  const [chatHistory, setChatHistory] = useState([
+    ...initialHistory, 
+    { role: 'system', content: `${initialPrompt}\n\nSelected screen: ${selectedScreen}` }
+  ]);
+  const [userInput, setUserInput] = useState('');
+  const [usageData, setUsageData] = useState(null);
+  const scrollViewRef = useRef();
+
+  const handleSend = async (contextualPrompt = '') => {
+    try {
+      const messages = [
+        { role: 'system', content: `${fullSystemPrompt}\n\nSelected screen: ${selectedScreen}` },
+        ...chatHistory.slice(1),  // Exclude the first system message from chatHistory
+      ];
+      if (contextualPrompt) {
+        messages.push({ role: 'system', content: `Consider this context: ${contextualPrompt}` });
+      }
+      messages.push({ role: 'user', content: userInput });
+
+      const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model: 'gpt-4o-mini',
+        messages,
+        max_tokens: 1500,
+        temperature: .25,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const completionText = response.data.choices[0].message.content;
+      setUsageData(response.data.usage);
+
+      setChatHistory([...chatHistory, { role: 'user', content: userInput }, { role: 'assistant', content: completionText }]);
+      setUserInput('');
+    } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error.message);
+    }
+  };
+  return {
+    userInput,
+    setUserInput,
+    chatHistory,
+    setChatHistory,
+    handleSend,
+    scrollViewRef,
+    usageData,
+  };
+}
+```
+
+## Conclusion
+
+This basic RAG implementation demonstrates how to enhance a chatbot's responses by incorporating relevant information from specific documents. By embedding the source material and using retrieval techniques, we've created a system that can provide more accurate and contextual responses based on the chosen learning approach.
+
+RAG offers a powerful way to combine the general knowledge of large language models with specific, curated information. This approach is particularly useful for applications requiring high accuracy or domain-specific knowledge, such as educational tools or customer support systems. While implementing RAG requires more initial setup and ongoing maintenance compared to using a standard LLM, the benefits in terms of response quality and information control often outweigh these challenges for many use cases.
+
+As AI continues to evolve, techniques like RAG will play an increasingly important role in creating more intelligent, accurate, and tailored AI applications. By understanding and implementing these techniques, developers can create more effective and trustworthy AI-powered solutions.
 
 ## Citations
 
