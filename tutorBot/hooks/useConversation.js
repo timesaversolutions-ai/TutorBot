@@ -5,11 +5,14 @@ import { db } from '../firebase';
 export const useConversation = () => {
   const saveConversation = useCallback(async (userId, chatHistory, screen) => {
     try {
+      // Filter out the system message
+      const filteredChatHistory = chatHistory.filter(msg => msg.role !== 'system');
+      
       const conversationRef = await addDoc(collection(db, 'conversations'), {
         userId,
-        chatHistory,
+        chatHistory: JSON.stringify(filteredChatHistory),
         timestamp: serverTimestamp(),
-        screen, // Add this line to save the screen name
+        screen,
       });
       return { id: conversationRef.id };
     } catch (error) {
@@ -56,9 +59,12 @@ export const useConversation = () => {
 
   const updateConversationHistory = useCallback(async (conversationId, chatHistory) => {
     try {
+      // Filter out the system message
+      const filteredChatHistory = chatHistory.filter(msg => msg.role !== 'system');
+      
       const conversationRef = doc(db, 'conversations', conversationId);
       await updateDoc(conversationRef, { 
-        chatHistory: JSON.stringify(chatHistory),
+        chatHistory: JSON.stringify(filteredChatHistory),
         timestamp: new Date()
       });
       console.log('Conversation updated:', conversationId);

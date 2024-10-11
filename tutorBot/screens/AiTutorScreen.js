@@ -25,6 +25,7 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
   const [embeddedSections, setEmbeddedSections] = useState(null);
+  const [scrollViewHeight, setScrollViewHeight] = useState(0);
 
   useEffect(() => {
     if (conversationId) {

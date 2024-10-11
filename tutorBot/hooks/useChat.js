@@ -25,7 +25,7 @@ export const useChat = (initialPrompt, fullSystemPrompt, user, selectedScreen, i
       const response = await axios.post('https://api.openai.com/v1/chat/completions', {
         model: 'gpt-4o-mini',
         messages,
-        max_tokens: 300,
+        max_tokens: 1500,
         temperature: .25,
       }, {
         headers: {
