@@ -113,11 +113,11 @@ The Chat interface starts by showing the user a summary of the learning approach
 
 These images show the chat interface in action:
 
-<img src="./TitleScreen.png" alt="Title Screen" width="200"/>
-<img src="./SummaryText.png" alt="Summary Text" width="200"/>
-<img src="./Response1.png" alt="Action 1" width="200"/>
-<img src="./Response2.png" alt="Action 2" width="200"/>
-<img src="./Response3.png" alt="Action 3" width="200"/>
+<img src="./images/TitleScreen.png" alt="Title Screen" width="200"/>
+<img src="./images/SummaryText.png" alt="Summary Text" width="200"/>
+<img src="./images/Response1.png" alt="Action 1" width="200"/>
+<img src="./images/Response2.png" alt="Action 2" width="200"/>
+<img src="./images/Response3.png" alt="Action 3" width="200"/>
 
 Notice how the chat asks one section at a time and uses the retrieved sections (namely paper's appendix) to tailor its responses.
 
