@@ -49,20 +49,51 @@ First, the user is asked to choose from the four learning approaches. Once chose
 
 ### Step 1: Embed the documents
 
-The simplest way I could find to prepare the document is by storing it in a JSON file, labeling the content as a single section.
+The simplest way to prepare the document for JavaScript use is by storing it in a JSON file, labeling the content as a single section.
 
-Once it's stored, send the file to the OpenAI embeddings endpoint. This endpoint returns a vector embedding for the text. This embedding is a representation of the text in a numerical format that can be will be used by the LLM to find the most relevant information.
+Once it's stored, send the file to the OpenAI embeddings endpoint. This endpoint returns a vector embedding for the text. This embedding is a representation of the text in a numerical format that will be used by the LLM to find the most relevant information.
 
 ```javascript
-const response = await openai.embeddings.create({
-  input: text,
-  model: 'text-embedding-3-small'
-});
+async function getEmbedding(text) {
+  const response = await openai.embeddings.create({
+    input: text,
+    model: 'text-embedding-3-small'
+  });
+  return response.data[0].embedding;
+}
+```
+
+To handle larger documents, we process them in chunks. The `generateEmbeddings` function takes an array of text sections, splits each into manageable chunks, and generates embeddings for each chunk:
+
+
+```javascript
+async function generateEmbeddings(sections) {
+  const embeddedSections = [];
+  for (const section of sections) {
+    const chunks = splitTextIntoChunks(section);
+    for (const chunk of chunks) {
+      const embedding = await getEmbedding(chunk);
+      embeddedSections.push({ text: chunk, embedding });
+    }
+  }
+  return embeddedSections;
+}
 ```
 
 ### Step 2: Create a retrieval function
 
-This function operates in three steps: first, it sends the user input to the OpenAI embeddings endpoint to generate a numerical representation of the text; next, it compares that embedding with the pre-embedded sections of the source document to identify the most relevant ones; finally, it sends both the most relevant sections and the user input to the LLM for processing.
+This function operates in three key steps:
+
+1. **Generate Query Embedding**: 
+   It sends the user input to the OpenAI embeddings endpoint, generating a numerical representation (embedding) of the query text.
+
+2. **Compare and Retrieve**:
+   The function compares this query embedding with the pre-embedded sections of the source document. Using cosine similarity, it identifies the most relevant sections. Cosine similarity is a way to measure how alike two pieces of text are by comparing their embeddings (number representations), and in our RAG system, we use it to find the parts of our stored information that are most similar to what learning approach the user chose.
+
+3. **Process with LLM**:
+   Finally, it sends both the identified relevant sections and the original user input to the Large Language Model (LLM) for processing and response generation.
+
+This approach allows the system to efficiently find and utilize the most relevant information from the source document when responding to user queries.
 
 ```javascript
 async function retrieveRelevantSections(query, embeddedSections, topK = 3) {
@@ -76,15 +107,23 @@ async function retrieveRelevantSections(query, embeddedSections, topK = 3) {
 }
 ```
 
-Cosine Similarity identifies the most relevant sections by calculating the numerical similarity between the user input and the embedded sections.
-
 ### Step 3: Use a chatbot interface to do the service
 
 The Chat interface starts by showing the user a summary of the learning approach they selected, and asking them to input a topic of their choice. Each time the user sends a message, their input and the embedded paper are sent to the LLM. This functionality allows the chat interface to closely follow the guidance from the paper, while also utilizing its base conversational abilities to interact with the user. While this does increase the token count slightly, it enables more accurate and contextual responses.
 
-Include Screens showing step by step front end process
+These images show the chat interface in action:
 
-This useChat hook manages the state and logic for a chat interface. It initializes the chat history, handles user input, and provides a handleSend function that sends messages to an AI model via API, incorporating both system prompts and relevant information from the paper found using the retrieval function. The hook returns various state variables and functions, allowing components to easily integrate chat functionality.
+<img src="./TitleScreen.png" alt="Title Screen" width="200"/>
+<img src="./SummaryText.png" alt="Summary Text" width="200"/>
+<img src="./Response1.png" alt="Action 1" width="200"/>
+<img src="./Response2.png" alt="Action 2" width="200"/>
+<img src="./Response3.png" alt="Action 3" width="200"/>
+
+Notice how the chat asks one section at a time and uses the retrieved sections (namely paper's appendix) to tailor its responses.
+
+Let's get into the code:
+
+The main function comes from the useChat hook, which manages the state and logic for the chat interface. It initializes the chat history, handles user input, and provides a handleSend function which sends the initial and subsequent messages to an AI model via API, incorporating  relevant information from the paper found using the retrieval function. The hook returns various state variables and functions, allowing components to easily integrate chat functionality.
 
 ```javascript
 export const useChat = (initialPrompt, fullSystemPrompt, user, selectedScreen, initialHistory = []) => {
@@ -100,7 +139,7 @@ export const useChat = (initialPrompt, fullSystemPrompt, user, selectedScreen, i
     try {
       const messages = [
         { role: 'system', content: `${fullSystemPrompt}\n\nSelected screen: ${selectedScreen}` },
-        ...chatHistory.slice(1),  // Exclude the first system message from chatHistory
+        ...chatHistory.slice(1),
       ];
       if (contextualPrompt) {
         messages.push({ role: 'system', content: `Consider this context: ${contextualPrompt}` });
