@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
-import { View, Text, TextInput, ScrollView, Button, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { styles } from '../styles/styles';
 import { prompts } from '../prompts';
 import { useChat } from '../hooks/useChat';
@@ -8,9 +8,13 @@ import { retrieveRelevantSections } from '../utils/embeddingService';
 import { useEmbedding } from '../contexts/EmbeddingContext';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
-  <Text style={role === 'user' ? styles.userText : role === 'assistant' ? styles.botText : styles.systemText}>
-    {content}
-  </Text>
+  <View style={[styles.messageRow, role === 'user' ? styles.userMessageRow : styles.botMessageRow]}>
+    <View style={[styles.messageBubble, role === 'user' ? styles.userMessageBubble : styles.botMessageBubble]}>
+      <Text style={[styles.messageText, role === 'user' ? styles.userMessageText : styles.botMessageText]}>
+        {content}
+      </Text>
+    </View>
+  </View>
 ));
 
 const ConversationScreen = React.memo(({ route, navigation }) => {
@@ -75,7 +79,7 @@ const ConversationScreen = React.memo(({ route, navigation }) => {
   }, [setChatHistory, conversationType]);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -86,22 +90,31 @@ const ConversationScreen = React.memo(({ route, navigation }) => {
           ref={scrollViewRef}
           onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
         >
-          <Text style={styles.systemText}>{prompts[conversationType].summary}</Text>
+          <Text style={styles.systemMessageText}>{prompts[conversationType].summary}</Text>
           {memoizedChatHistory}
         </ScrollView>
-        <TextInput
-          style={styles.input}
-          value={userInput}
-          onChangeText={setUserInput}
-          placeholder="Type your message"
-        />
-        <View style={styles.buttonContainer}>
-          <Button title="Send" onPress={handleSendPress} />
-          <Button title="New Conversation" onPress={handleNewConversation} />
-          <Button title="View Conversations" onPress={() => navigation.navigate('ConversationList', { userId })} />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={userInput}
+            onChangeText={setUserInput}
+            placeholder="Type a message..."
+            placeholderTextColor="#8E8E93"
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={handleSendPress}>
+            <Text style={styles.sendButtonText}>Send</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
+        <TouchableOpacity style={styles.navButton} onPress={handleNewConversation}>
+          <Text style={styles.navButtonText}>New Conversation</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('ConversationList', { userId })}>
+          <Text style={styles.navButtonText}>View Conversations</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 });
 

@@ -1,153 +1,188 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get('window');
+
+// New color palette
+const colors = {
+  primary: '#028f12',
+  primaryLight: '#04bf18',
+  primaryDark: '#016b0d',
+  background: '#f0fff1',
+  text: '#333333',
+  textLight: '#666666',
+  border: '#c8e6c9',
+};
 
 export const styles = StyleSheet.create({
+  // Container styles
   container: {
     flex: 1,
-    backgroundColor: "#eceff1",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+    backgroundColor: colors.background,
   },
-  promptText: {
+  chatContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+
+  // Message styles
+  messageRow: {
+    flexDirection: 'row',
+    marginVertical: 4,
+  },
+  userMessageRow: {
+    justifyContent: 'flex-end',
+  },
+  botMessageRow: {
+    justifyContent: 'flex-start',
+  },
+  messageBubble: {
+    maxWidth: width * 0.7,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 18,
+  },
+  userMessageBubble: {
+    backgroundColor: colors.primary,
+  },
+  botMessageBubble: {
+    backgroundColor: colors.border,
+  },
+  messageText: {
     fontSize: 16,
-    color: 'black',
-    marginBottom: 20,
+    lineHeight: 20,
+  },
+  userMessageText: {
+    color: '#FFFFFF',
+  },
+  botMessageText: {
+    color: colors.text,
+  },
+  systemMessageText: {
     textAlign: 'center',
+    color: '#8E8E93',
+    fontSize: 14,
+    marginVertical: 10,
+  },
+
+  // Input styles
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: colors.background,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    fontSize: 16,
+    marginRight: 10,
+  },
+  sendButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+  sendButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
+  // Navigation button styles
+  navButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+  navButtonText: {
+    color: colors.primary,
+    fontSize: 16,
+  },
+
+  // HomeScreen styles
+  homeContainer: {
+    flex: 1,
+    backgroundColor: "#F2F2F7",
+    padding: 20,
+    justifyContent: 'center',
+  },
+  homeTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.primary,
+    marginBottom: 10,
+    textAlign: 'center',
+    paddingTop: 20,
+  },
+  homeSubtitle: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: colors.textLight,
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  buttonGridContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
+    justifyContent: 'center',
+    maxWidth: 500, // Adjust this value based on your preference
   },
   buttonContainer: {
-    width: '45%', // Adjusted to fit two buttons in a row with spacing
-    aspectRatio: 1, // Makes the button a square
-    backgroundColor: '#f0f0f0', // Default background color (change as needed)
-    justifyContent: 'center',
+    width: width * 0.4,
+    aspectRatio: 1,
+    backgroundColor: '#FFFFFF',
+    borderColor: colors.primary,
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 15,
+    margin: 10,
     alignItems: 'center',
-    margin: 5, // Space between buttons
-    borderRadius: 10, // Optional: Rounded corners
+    justifyContent: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonIcon: {
+    marginBottom: 10,
   },
   buttonText: {
-    fontSize: 18,
-    color: 'black',
-    textAlign: 'center',
-    marginBottom: 10, // Space between text and the placeholder for the icon
-  },
-  iconPlaceholder: {
-    width: 40, // Placeholder width (adjust as needed)
-    height: 40, // Placeholder height (adjust as needed)
-    backgroundColor: '#ddd', // Placeholder color (can be changed)
-    borderRadius: 15, // Optional: make it a circle
-    marginTop: 5, // Space between text and icon
-  },
-  icon: {
-    marginTop: 5, // Space between text and icon
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center'
-  },
-  chatContainer: {
-    width: "100%",
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'gray',
-    margin: 5,
-    width: '100%', // This makes the input full width of its container
-  },
-  userText: {
-    alignSelf: "flex-end",
-    backgroundColor: "#ddf",
-    padding: 5,
-    marginVertical: 2,
-    borderRadius: 5,
-  },
-  botText: {
-    alignSelf: "flex-start",
-    backgroundColor: "#fdd",
-    padding: 5,
-    marginVertical: 2,
-    borderRadius: 5,
-  },
-  responseText: {
-    marginTop: 10,
-    color: "blue",
-  },
-  buttonText: {
-    fontSize: 18,
-    color: 'black',
-    textAlign: 'center',
-    padding: 10,
-  },
-  loginInput: {
-    backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    margin: 5,
-  },
-  buttonOutlineText: {
-    color: '#0782F9',
-    fontWeight: '700',
     fontSize: 16,
+    fontWeight: '500',
+    color: colors.primary,
+    textAlign: 'center',
+  },
+
+  // LoginScreen styles
+  loginInput: {
+    borderColor: colors.border,
   },
   buttonOutline: {
-    marginTop: 5,
-    backgroundColor: '#dedede',
-    borderRadius: 40,
+    borderColor: colors.primary,
   },
-  button: {
-    width: '100%', // Make buttons full width
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginVertical: 5, // Add vertical spacing between buttons
+  buttonOutlineText: {
+    color: colors.primary,
   },
-  loginButtonContainer: {
-    width: '100%', // Ensure the button container is full width
-    marginTop: 10, // Add some space above the buttons
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
+
+  // SettingsScreen styles
   signOutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FF6347', // Tomato color, you can change this
-    padding: 10,
-    borderRadius: 5,
-  },
-  signOutText: {
-    color: '#fff',
-    marginLeft: 10,
-    fontSize: 16,
-  },
-  conversationItemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingRight: 10,
-  },
-  conversationItem: {
-    // flex: 1,
-    padding: 10,
-  },
-  removeIcon: {
-    padding: 5,
+    backgroundColor: colors.primaryDark,
   },
 });
+
+export { colors };

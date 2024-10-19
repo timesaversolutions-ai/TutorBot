@@ -12,6 +12,7 @@ import ConversationListScreen from './screens/ConversationListScreen';
 import { TouchableOpacity } from 'react-native';
 import { EmbeddingProvider } from './contexts/EmbeddingContext';
 import { setupEmbeddingSystem } from './utils/embeddingService';
+import { colors } from './styles/styles';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,36 +29,42 @@ function MainTabs() {
             <Icon
               name="home-outline"
               size={24}
-              color="#FFD700"
+              color={colors.primary}
               style={{ marginLeft: 15 }}
             />
           </TouchableOpacity>
         ),
         headerStyle: {
-          backgroundColor: '#37474f'
+          backgroundColor: colors.background,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.border,
         },
+        headerTintColor: colors.text,
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
           if (route.name === 'Simulation') {
-            iconName = 'flask';
+            iconName = 'flask-outline';
           } else if (route.name === 'AiTutor') {
-            iconName = 'book';
+            iconName = 'book-outline';
           } else if (route.name === 'CoCreate') {
-            iconName = 'hammer';
+            iconName = 'hammer-outline';
           } else if (route.name === 'TeachMe') {
-            iconName = 'clipboard';
+            iconName = 'clipboard-outline';
           } else if (route.name === 'Home') {
-            iconName = 'home';
+            iconName = 'home-outline';
           }
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#FFD700',
-        tabBarInactiveTintColor: '#B0BEC5',
-        tabBarShowLabel: true,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textLight,
         tabBarStyle: {
-          backgroundColor: '#546e7a',
+          backgroundColor: colors.background,
+          borderTopWidth: 1,
+          borderTopColor: colors.border,
         },
         headerRight: () => (
           <TouchableOpacity
@@ -67,7 +74,7 @@ function MainTabs() {
             <Icon
               name="settings-outline"
               size={24}
-              color="#FFD700"
+              color={colors.primary}
               style={{ marginRight: 15 }}
             />
           </TouchableOpacity>

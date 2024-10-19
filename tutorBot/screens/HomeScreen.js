@@ -1,30 +1,45 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { styles } from '../styles/styles';
+import { colors } from '../styles/styles';
+
+const ServiceButton = ({ title, iconName, onPress }) => (
+  <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+    <Icon name={iconName} size={40} color={colors.primary} style={styles.buttonIcon} />
+    <Text style={styles.buttonText}>{title}</Text>
+  </TouchableOpacity>
+);
 
 export default function HomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.promptText}>Please select one of the following services to get started:</Text>
-      <View style={styles.buttonGrid}>
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Simulation')}>
-          <Text style={styles.buttonText}>Simulation</Text>
-          <Icon name="flask" size={30} color="black" style={styles.icon} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('AiTutor')}>
-          <Text style={styles.buttonText}>AiTutor</Text>
-          <Icon name="book" size={30} color="black" style={styles.icon} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('CoCreate')}>
-          <Text style={styles.buttonText}>Co-Create</Text>
-          <Icon name="hammer" size={30} color="black" style={styles.icon} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('TeachMe')}>
-          <Text style={styles.buttonText}>TeachMe</Text>
-          <Icon name="clipboard" size={30} color="black" style={styles.icon} />
-        </TouchableOpacity>
+    <SafeAreaView style={styles.homeContainer}>
+      <Text style={styles.homeTitle}>Welcome to TutorBot</Text>
+      <Text style={styles.homeSubtitle}>Choose a service to get started:</Text>
+      <View style={styles.buttonGridContainer}>
+        <View style={styles.buttonGrid}>
+          <ServiceButton
+            title="Simulation"
+            iconName="flask-outline"
+            onPress={() => navigation.navigate('Simulation')}
+          />
+          <ServiceButton
+            title="AI Tutor"
+            iconName="book-outline"
+            onPress={() => navigation.navigate('AiTutor')}
+          />
+          <ServiceButton
+            title="Co-Create"
+            iconName="hammer-outline"
+            onPress={() => navigation.navigate('CoCreate')}
+          />
+          <ServiceButton
+            title="Teach Me"
+            iconName="clipboard-outline"
+            onPress={() => navigation.navigate('TeachMe')}
+          />
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
