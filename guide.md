@@ -138,7 +138,7 @@ start with the [OPEN API REFERENCE](https://platform.openai.com/docs/api-referen
 
 how to get a API Key  
 >Create an OpenAI account
->![API Key Tab](API_KEY.png)
+>![API Key Tab](./images/API_KEY.png)
 
 how to secure API key in the code
 

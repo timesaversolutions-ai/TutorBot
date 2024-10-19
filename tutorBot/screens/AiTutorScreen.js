@@ -4,7 +4,8 @@ import { styles } from '../styles/styles';
 import { prompts } from '../prompts';
 import { useChat } from '../hooks/useChat';
 import { useConversation } from '../hooks/useConversation';
-import { setupEmbeddingSystem, retrieveRelevantSections } from '../utils/embeddingService';
+import { retrieveRelevantSections } from '../utils/embeddingService';
+import { useEmbedding } from '../contexts/EmbeddingContext';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
   <Text style={role === 'user' ? styles.userText : role === 'assistant' ? styles.botText : styles.systemText}>
@@ -15,17 +16,15 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
 const AiTutorScreen = React.memo(({ route, navigation }) => {
   const { userId, userEmail, conversationId } = route.params;
   const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(
-    prompts.AiTutor.summary,  // Summary for display
-    prompts.AiTutor.system,   // Full system prompt for API
+    prompts.AiTutor.summary,
+    prompts.AiTutor.system,
     { userId, userEmail },
     'AiTutor',
     []
   );
-
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
-  const [embeddedSections, setEmbeddedSections] = useState(null);
-  const [scrollViewHeight, setScrollViewHeight] = useState(0);
+  const { embeddedSections } = useEmbedding();
 
   useEffect(() => {
     if (conversationId) {
@@ -35,14 +34,6 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
         }
       });
     }
-
-    console.log('Setting up embedding system...');
-    setupEmbeddingSystem().then(result => {
-      console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
-      setEmbeddedSections(result);
-    }).catch(error => {
-      console.error('Error setting up embedding system:', error);
-    });
   }, [conversationId, loadConversation, setChatHistory]);
 
   useEffect(() => {

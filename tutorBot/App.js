@@ -11,8 +11,10 @@ import AiTutorScreen from './screens/AiTutorScreen';
 import CoCreateScreen from './screens/CoCreateScreen';
 import TeachMeScreen from './screens/TeachMeScreen';
 import SettingsScreen from './screens/Settings';
-import ConversationListScreen from './screens/ConversationListScreen'; // Add this import
+import ConversationListScreen from './screens/ConversationListScreen';
 import { TouchableOpacity } from 'react-native';
+import { EmbeddingProvider } from './contexts/EmbeddingContext';
+import { setupEmbeddingSystem } from './utils/embeddingService';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -130,11 +132,20 @@ function MainStack() {
 export default function App() {
   const [user, setUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
+  const [embeddedSections, setEmbeddedSections] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       if (initializing) setInitializing(false);
+    });
+
+    // Set up the embedding system
+    setupEmbeddingSystem().then(result => {
+      console.log(`Embedding system setup complete. Got ${result.length} embedded sections.`);
+      setEmbeddedSections(result);
+    }).catch(error => {
+      console.error('Error setting up embedding system:', error);
     });
 
     return unsubscribe;
@@ -143,22 +154,24 @@ export default function App() {
   if (initializing) return null;
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {user ? (
-          <Stack.Screen 
-            name="MainApp" 
-            component={MainStack} 
-            options={{ headerShown: false }}
-          />
-        ) : (
-          <Stack.Screen 
-            name="Login" 
-            component={LoginScreen} 
-            options={{ headerShown: false }}
-          />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <EmbeddingProvider value={{ embeddedSections }}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {user ? (
+            <Stack.Screen 
+              name="MainApp" 
+              component={MainStack} 
+              options={{ headerShown: false }}
+            />
+          ) : (
+            <Stack.Screen 
+              name="Login" 
+              component={LoginScreen} 
+              options={{ headerShown: false }}
+            />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </EmbeddingProvider>
   );
 }
