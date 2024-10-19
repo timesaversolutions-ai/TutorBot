@@ -13,13 +13,13 @@ const MemoizedChatMessage = React.memo(({ role, content }) => (
   </Text>
 ));
 
-const AiTutorScreen = React.memo(({ route, navigation }) => {
-  const { userId, userEmail, conversationId } = route.params;
+const ConversationScreen = React.memo(({ route, navigation }) => {
+  const { userId, userEmail, conversationId, conversationType } = route.params;
   const { userInput, setUserInput, chatHistory, setChatHistory, handleSend, scrollViewRef, usageData } = useChat(
-    prompts.AiTutor.summary,
-    prompts.AiTutor.system,
+    prompts[conversationType].summary,
+    prompts[conversationType].system,
     { userId, userEmail },
-    'AiTutor',
+    conversationType,
     []
   );
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
@@ -64,15 +64,15 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
     if (currentConversationId) {
       await updateConversationHistory(currentConversationId, chatHistory);
     } else {
-      const { id } = await saveConversation(userId, chatHistory, 'AiTutor');
+      const { id } = await saveConversation(userId, chatHistory, conversationType);
       setCurrentConversationId(id);
     }
-  }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput]);
+  }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput, conversationType]);
 
   const handleNewConversation = useCallback(() => {
-    setChatHistory([{ role: 'system', content: prompts.AiTutor.summary }]);
+    setChatHistory([{ role: 'system', content: prompts[conversationType].summary }]);
     setCurrentConversationId(null);
-  }, [setChatHistory]);
+  }, [setChatHistory, conversationType]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -86,7 +86,7 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
           ref={scrollViewRef}
           onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
         >
-          <Text style={styles.systemText}>{prompts.AiTutor.summary}</Text>
+          <Text style={styles.systemText}>{prompts[conversationType].summary}</Text>
           {memoizedChatHistory}
         </ScrollView>
         <TextInput
@@ -105,4 +105,4 @@ const AiTutorScreen = React.memo(({ route, navigation }) => {
   );
 });
 
-export default AiTutorScreen;
+export default ConversationScreen;

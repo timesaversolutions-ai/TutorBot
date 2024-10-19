@@ -6,10 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { auth, onAuthStateChanged } from './firebase';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
-import SimulationScreen from './screens/SimulationScreen';
-import AiTutorScreen from './screens/AiTutorScreen';
-import CoCreateScreen from './screens/CoCreateScreen';
-import TeachMeScreen from './screens/TeachMeScreen';
+import ConversationScreen from './screens/ConversationScreen';
 import SettingsScreen from './screens/Settings';
 import ConversationListScreen from './screens/ConversationListScreen';
 import { TouchableOpacity } from 'react-native';
@@ -84,23 +81,23 @@ function MainTabs() {
       />
       <Tab.Screen 
         name="Simulation" 
-        component={SimulationScreen} 
-        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email }}
+        component={ConversationScreen} 
+        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email, conversationType: 'Simulation' }}
       />
       <Tab.Screen 
         name="AiTutor" 
-        component={AiTutorScreen} 
-        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email }}
+        component={ConversationScreen} 
+        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email, conversationType: 'AiTutor' }}
       />
       <Tab.Screen 
         name="CoCreate" 
-        component={CoCreateScreen} 
-        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email }}
+        component={ConversationScreen} 
+        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email, conversationType: 'CoCreate' }}
       />
       <Tab.Screen 
         name="TeachMe" 
-        component={TeachMeScreen} 
-        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email }}
+        component={ConversationScreen} 
+        initialParams={{ userId: auth.currentUser?.uid, userEmail: auth.currentUser?.email, conversationType: 'TeachMe' }}
       />
       <Tab.Screen 
         name="Settings" 
