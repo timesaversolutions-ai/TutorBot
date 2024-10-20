@@ -40,8 +40,8 @@ This project implements an AI-powered learning assistant with multiple modes of 
 
 Screen examples:
 
-<img src="./images/TitleScreen.png" alt="Title Screen" width="200"/>
-<img src="./images/SummaryText.png" alt="Summary Text" width="200"/>
-<img src="./images/Response1.png" alt="Action 1" width="200"/>
-<img src="./images/Response2.png" alt="Action 2" width="200"/>
-<img src="./images/Response3.png" alt="Action 3" width="200"/>
+<img src="./images/HomeScreen.png" alt="Home Screen" width="100"/>
+<img src="./images/Conversations_1.png" alt="Conversations 1" width="100"/>
+<img src="./images/Conversations_2.png" alt="Conversations 2" width="100"/>
+<img src="./images/Settings.png" alt="Settings" width="100"/>
+<img src="./images/Conversation_List 2.png" alt="Conversations List" width="100"/>
