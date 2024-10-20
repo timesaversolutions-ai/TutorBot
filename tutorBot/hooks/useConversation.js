@@ -48,7 +48,14 @@ export const useConversation = () => {
       const querySnapshot = await getDocs(q);
       const conversations = [];
       querySnapshot.forEach((doc) => {
-        conversations.push({ id: doc.id, ...doc.data() });
+        const data = doc.data();
+        const chatHistory = JSON.parse(data.chatHistory);
+        const messageCount = chatHistory.length;
+        conversations.push({ 
+          id: doc.id, 
+          ...data, 
+          messageCount 
+        });
       });
       return conversations;
     } catch (error) {

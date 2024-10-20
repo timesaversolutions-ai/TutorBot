@@ -6,7 +6,7 @@ export const prompts = {
     NARRATIVE: The student is introduced to AI Mentor, is asked initial questions to guide the scenario setup, engages in the role-play, and receives feedback afterward. 
     Use the embedded document to learn how to go about the learning approach selected.
     `,
-    summary: `You selected the Simulation service. Here, I will create various scenarios that are designed to test and enhance your skills in a simulated environment. We will cover multiple topics, dive deep into potential pitfalls, and provide feedback based on your responses. Let's start with...`
+    summary: `Welcome to Simulation. I'll create scenarios to test and enhance your skills in a simulated environment. What situation would you like to practice?`
   },
   AiTutor: {
     system: `
@@ -17,11 +17,7 @@ export const prompts = {
     NARRATIVE: The student is introduced to AI Tutor, who begins by asking a series of initial questions to understand the student’s learning goals, level, and prior knowledge about the topic. The tutor then guides and supports the student in learning about the topic, only wrapping up the conversation once the student demonstrates evidence of understanding.
     Use the embedded document to learn how to go about the learning approach selected.
     `,
-    summary: `You selected the AI Tutoring service. 
-    Here, I will guide you through learning a specific topic of your choice. 
-    We'll begin by discussing your learning goals, level, and prior knowledge. 
-    Then, I’ll tailor explanations, ask open-ended questions, and provide examples to deepen your understanding. 
-    What topic do you want to discuss?`
+    summary: `Welcome to AI Tutoring. I'll guide you through learning a topic of your choice. What would you like to learn about?`
   },
   CoCreate: {
     system: `
@@ -32,7 +28,7 @@ export const prompts = {
     NARRATIVE: The student is introduced to AI Mentor, who asks initial questions to guide the selection of the case topic and outline. Together, you create a draft case, work to improve it, and reflect on how a peer might approach the case.
     Use the embedded document to learn how to go about the learning approach selected.
     `,
-    summary:`You selected the AI Case Co-Creation service. Here, I will help you create and refine a case study on a topic you've studied. We'll start by discussing the topic and gathering details, then we'll draft a case together. Afterward, we'll work to improve the case and consider how a peer might approach it. What topic would you like to explore?`
+    summary: `Welcome to Case Co-Creation. We'll create a case study on a topic you've studied. What topic would you like to explore?`
   },
   TeachMe: {
     system: `
@@ -43,6 +39,6 @@ export const prompts = {
     NARRATIVE: The student is introduced to AI Mentor, who asks initial questions to guide the scenario setup. The student then plays through the scene, helping a novice student understand a concept, and receives feedback following the teaching exercise.
     Use the embedded document to learn how to go about the learning approach selected.
     `,
-    summary:`You selected the AI Teaching Practice service. Here, I will help you practice teaching a concept by playing the role of a novice student. We'll begin by setting up the scenario and choosing my student persona, then you'll guide me through the topic by explaining and answering questions. Afterward, I’ll provide feedback on your teaching. What topic would you like to teach?`
+    summary: `Welcome to Teaching Practice. You'll teach me, acting as a novice student, about a topic of your choice. What would you like to teach?`
   }
 };

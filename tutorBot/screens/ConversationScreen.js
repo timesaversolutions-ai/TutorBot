@@ -6,6 +6,7 @@ import { useChat } from '../hooks/useChat';
 import { useConversation } from '../hooks/useConversation';
 import { retrieveRelevantSections } from '../utils/embeddingService';
 import { useEmbedding } from '../contexts/EmbeddingContext';
+import { colors } from '../styles/styles';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
   <View style={[styles.messageRow, role === 'user' ? styles.userMessageRow : styles.botMessageRow]}>
@@ -106,7 +107,7 @@ const ConversationScreen = React.memo(({ route, navigation }) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 10, backgroundColor: colors.background }}>
         <TouchableOpacity style={styles.navButton} onPress={handleNewConversation}>
           <Text style={styles.navButtonText}>New Conversation</Text>
         </TouchableOpacity>

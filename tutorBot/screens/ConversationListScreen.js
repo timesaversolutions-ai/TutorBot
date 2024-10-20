@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { styles } from '../styles/styles';
+import { View, Text, FlatList, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
+import { styles, colors } from '../styles/styles';
 import { useConversation } from '../hooks/useConversation';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -9,7 +9,7 @@ const ConversationListScreen = ({ route, navigation }) => {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { getUserConversations, removeConversation } = useConversation(); // Add removeConversation
+  const { getUserConversations, removeConversation } = useConversation();
 
   useEffect(() => {
     const loadConversations = async () => {
@@ -54,43 +54,51 @@ const ConversationListScreen = ({ route, navigation }) => {
       <TouchableOpacity
         style={styles.conversationItem}
         onPress={() => {
-          const screen = item.screen || 'Simulation'; // Default to Simulation if not specified
+          const screen = item.screen || 'Simulation';
           navigation.navigate(screen, { userId, conversationId: item.id });
         }}
       >
-        <Text style={{color: 'blue'}}>Load Conversation</Text>
+        <View style={styles.conversationItemContent}>
+          <View>
+            <Text style={styles.conversationItemTitle}>{item.screen || 'Simulation'}</Text>
+            <Text style={styles.conversationItemDate}>
+              {new Date(item.timestamp?.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </Text>
+          </View>
+          <Text style={styles.messageCount}>{item.messageCount} messages</Text>
+        </View>
       </TouchableOpacity>
-      <Text>{new Date(item.timestamp?.toDate()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</Text>
-      <Text>{item.screen || 'Simulation'}</Text>
       <TouchableOpacity
         onPress={() => handleRemoveConversation(item.id)}
         style={styles.removeIcon}
       >
-        <Icon name="trash-outline" size={24} color="red" />
+        <Icon name="trash-outline" size={24} color={colors.error} />
       </TouchableOpacity>
     </View>
   );
 
   if (loading) {
-    return <View style={styles.container}><Text>Loading...</Text></View>;
+    return <View style={styles.container}><Text style={styles.loadingText}>Loading...</Text></View>;
   }
 
   if (error) {
-    return <View style={styles.container}><Text>{error}</Text></View>;
+    return <View style={styles.container}><Text style={styles.errorText}>{error}</Text></View>;
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.screenTitle}>Your Conversations</Text>
       {conversations.length === 0 ? (
-        <Text>No conversations found</Text>
+        <Text style={styles.noConversationsText}>No conversations found</Text>
       ) : (
         <FlatList
           data={conversations}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.conversationList}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

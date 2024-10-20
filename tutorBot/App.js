@@ -29,13 +29,13 @@ function MainTabs() {
             <Icon
               name="home-outline"
               size={24}
-              color={colors.primary}
+              color={colors.tabIconInactive}
               style={{ marginLeft: 15 }}
             />
           </TouchableOpacity>
         ),
         headerStyle: {
-          backgroundColor: colors.background,
+          backgroundColor: colors.surface,
           elevation: 0,
           shadowOpacity: 0,
           borderBottomWidth: 1,
@@ -59,10 +59,10 @@ function MainTabs() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textLight,
+        tabBarActiveTintColor: colors.tabIconActive,
+        tabBarInactiveTintColor: colors.tabIconInactive,
         tabBarStyle: {
-          backgroundColor: colors.background,
+          backgroundColor: colors.surface,
           borderTopWidth: 1,
           borderTopColor: colors.border,
         },
@@ -74,7 +74,7 @@ function MainTabs() {
             <Icon
               name="settings-outline"
               size={24}
-              color={colors.primary}
+              color={colors.tabIconInactive}
               style={{ marginRight: 15 }}
             />
           </TouchableOpacity>
