@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, SafeAreaView, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
-import { styles } from '../styles/styles';
+import { styles, colors } from '../styles/styles';
 
 export default function SettingsScreen({ navigation, route }) {
   const { userId } = route.params;
@@ -25,16 +25,30 @@ export default function SettingsScreen({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Settings</Text>
-      <TouchableOpacity style={styles.button} onPress={navigateToConversations}>
-        <Icon name="chatbubbles-outline" size={24} color="#fff" />
-        <Text style={styles.buttonText}>Your Conversations</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-        <Icon name="log-out-outline" size={24} color="#fff" />
-        <Text style={styles.signOutText}>Sign Out</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.settingsContainer}>
+        <Text style={styles.screenTitle}>Settings</Text>
+        <View style={styles.settingsSection}>
+          <TouchableOpacity style={styles.settingsButton} onPress={navigateToConversations}>
+            <Icon name="chatbubbles-outline" size={24} color={colors.primary} />
+            <Text style={styles.settingsButtonText}>Your Conversations</Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity style={styles.settingsButton} onPress={() => {}}>
+            <Icon name="person-outline" size={24} color={colors.primary} />
+            <Text style={styles.settingsButtonText}>Account Settings</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.settingsButton} onPress={() => {}}>
+            <Icon name="notifications-outline" size={24} color={colors.primary} />
+            <Text style={styles.settingsButtonText}>Notifications</Text>
+          </TouchableOpacity> */}
+        </View>
+        <View style={styles.settingsSection}>
+          <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+            <Icon name="log-out-outline" size={24} color={colors.error} />
+            <Text style={styles.signOutButtonText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

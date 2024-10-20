@@ -190,8 +190,49 @@ export const styles = StyleSheet.create({
   },
 
   // SettingsScreen styles
+  settingsContainer: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: colors.background,
+  },
+  settingsSection: {
+    marginBottom: 20,
+    backgroundColor: colors.surface,
+    borderRadius: 10,
+    overflow: 'hidden',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  settingsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  settingsButtonText: {
+    marginLeft: 15,
+    fontSize: 16,
+    color: colors.text,
+  },
   signOutButton: {
-    backgroundColor: colors.primaryDark,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    backgroundColor: colors.surface,
+  },
+  signOutButtonText: {
+    marginLeft: 15,
+    fontSize: 16,
+    color: colors.error,
+    fontWeight: 'bold',
   },
 
   // ConversationListScreen styles
