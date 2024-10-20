@@ -1,26 +1,31 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { setupEmbeddingSystem } from '../utils/embeddingService';
 
 const EmbeddingContext = createContext();
 
-// Toggle this flag to enable/disable actual embedding API calls
-const USE_ACTUAL_EMBEDDING = false;
+export const EmbeddingProvider = ({ children }) => {
+  const [embeddedSections, setEmbeddedSections] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-// Mock embedded sections for when USE_ACTUAL_EMBEDDING is false
-const MOCK_EMBEDDED_SECTIONS = [
-  { text: "This is a mock embedded section 1", embedding: [0.1, 0.2, 0.3] },
-  { text: "This is a mock embedded section 2", embedding: [0.4, 0.5, 0.6] },
-  // Add more mock sections as needed
-];
+  useEffect(() => {
+    const loadEmbeddings = async () => {
+      try {
+        setIsLoading(true);
+        const sections = await setupEmbeddingSystem();
+        setEmbeddedSections(sections);
+      } catch (error) {
+        console.error('Error loading embeddings:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-export const EmbeddingProvider = ({ children, value }) => {
-  const [embeddedSections, setEmbeddedSections] = useState(
-    USE_ACTUAL_EMBEDDING ? value : MOCK_EMBEDDED_SECTIONS
-  );
+    loadEmbeddings();
+  }, []);
 
   const contextValue = {
     embeddedSections,
-    setEmbeddedSections,
-    isUsingActualEmbedding: USE_ACTUAL_EMBEDDING
+    isLoading,
   };
 
   return (

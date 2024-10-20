@@ -303,6 +303,29 @@ export const styles = StyleSheet.create({
     color: colors.textLight,
     marginLeft: 10,
   },
+  markdownContainer: {
+    flex: 1,
+  },
+  markdownText: {
+    color: colors.text,
+    fontSize: 16,
+  },
+  markdownCode: {
+    fontFamily: 'monospace',
+    backgroundColor: colors.border,
+    padding: 5,
+    borderRadius: 3,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: colors.text,
+  },
 });
 
 export { colors };

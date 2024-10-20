@@ -67,7 +67,7 @@ async function setupEmbeddingSystem() {
   }
   console.log('Generating embeddings...');
   const embeddedSections = await generateEmbeddings(sections);
-  console.log(`Generated embeddings for ${embeddedSections.length} chunks`);
+  console.log(`Generated embeddings: ${embeddedSections.length > 0 ? 'Yes' : 'No'}`);
   return embeddedSections;
 }
 

@@ -1,19 +1,21 @@
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
-import { styles } from '../styles/styles';
+import Markdown from 'react-native-markdown-display';
+import { styles, colors } from '../styles/styles';
 import { prompts } from '../prompts';
 import { useChat } from '../hooks/useChat';
 import { useConversation } from '../hooks/useConversation';
 import { retrieveRelevantSections } from '../utils/embeddingService';
 import { useEmbedding } from '../contexts/EmbeddingContext';
-import { colors } from '../styles/styles';
 
 const MemoizedChatMessage = React.memo(({ role, content }) => (
   <View style={[styles.messageRow, role === 'user' ? styles.userMessageRow : styles.botMessageRow]}>
     <View style={[styles.messageBubble, role === 'user' ? styles.userMessageBubble : styles.botMessageBubble]}>
-      <Text style={[styles.messageText, role === 'user' ? styles.userMessageText : styles.botMessageText]}>
-        {content}
-      </Text>
+      {role === 'user' ? (
+        <Text style={[styles.messageText, styles.userMessageText]}>{content}</Text>
+      ) : (
+        <Markdown style={markdownStyles}>{content}</Markdown>
+      )}
     </View>
   </View>
 ));
@@ -29,23 +31,30 @@ const ConversationScreen = React.memo(({ route, navigation }) => {
   );
   const { saveConversation, loadConversation, updateConversationHistory } = useConversation();
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
-  const { embeddedSections } = useEmbedding();
+  const { embeddedSections, isLoading } = useEmbedding();
 
   useEffect(() => {
     if (conversationId) {
       loadConversation(conversationId).then(loadedHistory => {
         if (loadedHistory) {
-          setChatHistory(loadedHistory);
+          setChatHistory([
+            { role: 'system', content: prompts[conversationType].summary },
+            ...loadedHistory
+          ]);
         }
       });
     }
-  }, [conversationId, loadConversation, setChatHistory]);
+  }, [conversationId, loadConversation, setChatHistory, conversationType]);
 
   useEffect(() => {
     if (usageData) {
       console.log('Latest usage data:', JSON.stringify(usageData, null, 2));
     }
   }, [usageData]);
+
+  useEffect(() => {
+    console.log('Embedded sections available:', embeddedSections != null && embeddedSections.length > 0);
+  }, [embeddedSections]);
 
   const memoizedChatHistory = useMemo(() => (
     chatHistory.slice(1).map(({ role, content }, index) => (
@@ -54,25 +63,33 @@ const ConversationScreen = React.memo(({ route, navigation }) => {
   ), [chatHistory]);
 
   const handleSendPress = useCallback(async () => {
-    console.log('User Input:', userInput);
+    let updatedChatHistory;
 
-    if (embeddedSections) {
-      console.log('Embedded sections available. Retrieving relevant sections...');
+    if (isLoading) {
+      console.log('Embeddings are still loading. Sending without context.');
+      updatedChatHistory = await handleSend();
+    } else if (embeddedSections && embeddedSections.length > 0) {
       const relevantSections = await retrieveRelevantSections(userInput, embeddedSections);
-      const contextualPrompt = relevantSections.map(section => section.text).join('\n\n');
-      await handleSend(contextualPrompt);
+      if (relevantSections && relevantSections.length > 0) {
+        console.log('Relevant sections found. Sending with context.');
+        const contextualPrompt = relevantSections.map(section => section.text).join('\n\n');
+        updatedChatHistory = await handleSend(contextualPrompt);
+      } else {
+        console.log('No relevant sections found. Sending without context.');
+        updatedChatHistory = await handleSend();
+      }
     } else {
       console.log('No embedded sections available. Sending without context.');
-      await handleSend();
+      updatedChatHistory = await handleSend();
     }
 
     if (currentConversationId) {
-      await updateConversationHistory(currentConversationId, chatHistory);
+      await updateConversationHistory(currentConversationId, updatedChatHistory);
     } else {
-      const { id } = await saveConversation(userId, chatHistory, conversationType);
+      const { id } = await saveConversation(userId, updatedChatHistory, conversationType);
       setCurrentConversationId(id);
     }
-  }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, chatHistory, embeddedSections, userInput, conversationType]);
+  }, [handleSend, currentConversationId, updateConversationHistory, saveConversation, userId, embeddedSections, userInput, conversationType, isLoading]);
 
   const handleNewConversation = useCallback(() => {
     setChatHistory([{ role: 'system', content: prompts[conversationType].summary }]);
@@ -118,5 +135,21 @@ const ConversationScreen = React.memo(({ route, navigation }) => {
     </SafeAreaView>
   );
 });
+
+const markdownStyles = {
+  body: {
+    color: colors.text,
+  },
+  code_inline: {
+    backgroundColor: colors.border,
+    color: colors.text,
+  },
+  code_block: {
+    backgroundColor: colors.border,
+    padding: 10,
+    borderRadius: 5,
+  },
+  // Add more markdown styles as needed
+};
 
 export default ConversationScreen;

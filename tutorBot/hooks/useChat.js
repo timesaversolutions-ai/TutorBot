@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
 
@@ -11,7 +11,7 @@ export const useChat = (initialPrompt, fullSystemPrompt, user, selectedScreen, i
   const [usageData, setUsageData] = useState(null);
   const scrollViewRef = useRef();
 
-  const handleSend = async (contextualPrompt = '') => {
+  const handleSend = useCallback(async (contextualPrompt = '') => {
     try {
       const messages = [
         { role: 'system', content: `${fullSystemPrompt}\n\nSelected screen: ${selectedScreen}` },
@@ -37,12 +37,15 @@ export const useChat = (initialPrompt, fullSystemPrompt, user, selectedScreen, i
       const completionText = response.data.choices[0].message.content;
       setUsageData(response.data.usage);
 
-      setChatHistory([...chatHistory, { role: 'user', content: userInput }, { role: 'assistant', content: completionText }]);
+      const newChatHistory = [...chatHistory, { role: 'user', content: userInput }, { role: 'assistant', content: completionText }];
+      setChatHistory(newChatHistory);
       setUserInput('');
+
+      return newChatHistory; // Return the updated chat history
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
-  };
+  }, [chatHistory, userInput, fullSystemPrompt, selectedScreen, setChatHistory, setUserInput, setUsageData]);
 
   return {
     userInput,

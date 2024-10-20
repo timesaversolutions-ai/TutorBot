@@ -27,7 +27,8 @@ export const useConversation = () => {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
-        return JSON.parse(data.chatHistory);
+        const parsedHistory = JSON.parse(data.chatHistory);
+        return parsedHistory;
       }
       return null;
     } catch (error) {
@@ -50,7 +51,7 @@ export const useConversation = () => {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         const chatHistory = JSON.parse(data.chatHistory);
-        const messageCount = chatHistory.length;
+        const messageCount = chatHistory.filter(msg => msg.role !== 'system').length;
         conversations.push({ 
           id: doc.id, 
           ...data, 
@@ -66,13 +67,10 @@ export const useConversation = () => {
 
   const updateConversationHistory = useCallback(async (conversationId, chatHistory) => {
     try {
-      // Filter out the system message
-      const filteredChatHistory = chatHistory.filter(msg => msg.role !== 'system');
-      
       const conversationRef = doc(db, 'conversations', conversationId);
       await updateDoc(conversationRef, { 
-        chatHistory: JSON.stringify(filteredChatHistory),
-        timestamp: new Date()
+        chatHistory: JSON.stringify(chatHistory),
+        timestamp: serverTimestamp()
       });
       console.log('Conversation updated:', conversationId);
       return true;
