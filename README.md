@@ -44,4 +44,4 @@ Screen examples:
 <img src="./images/Conversations_1.png" alt="Conversations 1" width="100"/>
 <img src="./images/Conversations_2.png" alt="Conversations 2" width="100"/>
 <img src="./images/Settings.png" alt="Settings" width="100"/>
-<img src="./images/Conversation_List 2.png" alt="Conversations List" width="100"/>
+<img src="./images/Conversation_List.png" alt="Conversations List" width="100"/>
